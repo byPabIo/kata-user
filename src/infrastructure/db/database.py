@@ -1,8 +1,13 @@
 import os
 from dotenv import load_dotenv
 from peewee import PostgresqlDatabase
+from infrastructure.db.models.user_model import UserModel
 
 load_dotenv()
+
+for var in ["DB_NAME", "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT"]:
+    if not os.getenv(var):
+        raise ValueError(f"Error: La variable de entorno {var} no está definida en el archivo .env")
 
 db = PostgresqlDatabase(
     os.getenv("DB_NAME"),
@@ -11,9 +16,20 @@ db = PostgresqlDatabase(
     host=os.getenv("DB_HOST"),
     port=int(os.getenv("DB_PORT"))
 )
-try:
-    db.connect()
-    print("Conexión exitosa!")
-    db.close()
-except Exception as e:
-    print(f"Error al conectar a la base de datos: {e}")
+
+def initialize_database():
+    try:
+        db.connect()
+        print("✅ Conexión a la base de datos exitosa!")
+
+        db.create_tables([UserModel])
+        print("Tablas verificadas/creadas correctamente!")
+
+    except Exception as e:
+        print(f"Error al conectar o crear tablas en la base de datos: {e}")
+
+    finally:
+        db.close()
+
+if __name__ == "__main__":
+    initialize_database()
