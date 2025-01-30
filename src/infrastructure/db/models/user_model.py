@@ -1,4 +1,4 @@
-import uuid
+import uuid, peewee
 from datetime import datetime
 
 from peewee import Model, UUIDField, CharField, BooleanField, DateTimeField

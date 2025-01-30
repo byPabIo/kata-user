@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 from werkzeug.security import generate_password_hash
 from peewee import IntegrityError
 from infrastructure.db.models.user_model import UserModel
+
 from core.exceptions.exceptions import UserNotFoundException, get_user_or_raise
 
 def create_app():
@@ -40,7 +41,7 @@ def create_app():
 
     @app.route("/users/<user_id>", methods=["GET"])
     def get_user(user_id):
-        """Obtiene un usuario por ID"""
+
         try:
             user = get_user_or_raise(UserModel, user_id)
             return jsonify({
